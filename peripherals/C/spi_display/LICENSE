@@ -1,0 +1,7 @@
+The example is adapted from the vendor-provided code available at Waveshare 2.0" LCD Module Demo Example, with the following modifications:
+
+- Hardware PWM is used for backlight brightness control.
+- Hardware SPI is used for chip select (CS) pin control.
+
+Please refer the Waveshare 2.0" LCD Module Demo Example for more license info.
+https://www.waveshare.com/wiki/2inch_LCD_Module#Download_Examples
