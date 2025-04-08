@@ -23,7 +23,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include
                     ${OpenCV_INCLUDE_DIRS}
 )
 
-LINK_DIRECTORIES(${VTCS_LIB_PATH})
+LINK_DIRECTORIES(${VTCS_LIB_PATH}
+                 ${APP_PATH}/lib)
 
 SET(LINK_LIST vmf
               util
