@@ -77,9 +77,13 @@ static void *ssm_reader(void *param)
         VMF_VSRC_SSM_GetInfo(tReaderSsmBuffer.buffer, &tSsmInfo);
 
         fwrite(tReaderSsmBuffer.buffer + tSsmInfo.dwOffset[0] , 1, tSsmInfo.dwYSize ,fp);
+        if (0 < tSsmInfo.dwUVSize) {
+            fwrite(tReaderSsmBuffer.buffer + tSsmInfo.dwOffset[1] , 1, tSsmInfo.dwUVSize ,fp);
+            fwrite(tReaderSsmBuffer.buffer + tSsmInfo.dwOffset[2] , 1, tSsmInfo.dwUVSize ,fp);
+        }
         fflush(fp);
 
-        printf("[%s] index %d buffer %p, Only write Y frame\n",__FUNCTION__, tReaderSsmBuffer.idx, (void*)tReaderSsmBuffer.buffer_phys_addr);
+        printf("[%s] index %d buffer %p, YUV420 planar data frame\n",__FUNCTION__, tReaderSsmBuffer.idx, (void*)tReaderSsmBuffer.buffer_phys_addr);
         g_dwSaveNum -= 1;
     }
 

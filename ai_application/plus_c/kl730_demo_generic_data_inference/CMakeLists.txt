@@ -1,7 +1,7 @@
 # build with current *.c/*.cpp plus common source files in parent folder
 # executable name is current folder name.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.22)
 project(plus_demo_generic_data_inference)
 
 get_filename_component(app_name ${CMAKE_CURRENT_SOURCE_DIR} NAME)
