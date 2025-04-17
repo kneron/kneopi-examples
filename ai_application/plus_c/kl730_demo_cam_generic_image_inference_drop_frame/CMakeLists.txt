@@ -1,7 +1,7 @@
 # build with current *.c/*.cpp plus common source files in parent folder
 # executable name is current folder name.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.22)
 project(plus_demo_cam_generic_image_inference_drop_frame)
 
 find_package(PkgConfig REQUIRED)
