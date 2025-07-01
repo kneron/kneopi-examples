@@ -116,7 +116,7 @@ int dma2d_copy(VMF_DMA_HANDLE_T* dma_handle, VMF_DMA_DESCRIPTOR_T* dma_desc, voi
     dma_addr.pbyDstCbPhysAddr = dma_addr.pbyDstYPhysAddr + vsrc_ssm_info->dwWidth* vsrc_ssm_info->dwHeight;
     dma_addr.pbyDstCrPhysAddr = dma_addr.pbyDstCbPhysAddr + vsrc_ssm_info->dwWidth* vsrc_ssm_info->dwHeight/4;
     dma_addr.dwDstStride = vsrc_ssm_info->dwWidth;
-    MemBroker_CacheInvalidate(dest, vsrc_ssm_info->dwWidth * vsrc_ssm_info->dwHeight * 1.5);
+    MemBroker_CacheFlush(dest, vsrc_ssm_info->dwWidth * vsrc_ssm_info->dwHeight * 1.5);
     ret |= VMF_DMA_Descriptor_Update_Addr(dma_desc, &dma_addr);
     ret |= VMF_DMA_Setup(dma_handle, &dma_desc, 1);
     ret |= VMF_DMA_Process(dma_handle);
