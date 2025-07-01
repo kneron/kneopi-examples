@@ -20,7 +20,7 @@ int main()
 
     // Doing some memory access in Hardware, eq. DMA, IE/NPU
     /* Make sure there is no cache with data different from physical DRAM  */
-    MemBroker_CacheInvalidate(edmc_vir_addr, MEM_DEMO_SIZE);
+    MemBroker_CacheFlush(edmc_vir_addr, MEM_DEMO_SIZE);
 
     /* Free EDMC Memory Buffer */
     /* !!! MUST Free the Memory, Or System WILL BE memory leaked until reboot. !!! */
