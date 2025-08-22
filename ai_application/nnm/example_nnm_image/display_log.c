@@ -11,6 +11,7 @@
 #include "kdp2_inf_app_yolo.h"
 #include "demo_customize_inf_single_model.h"
 #include "demo_customize_inf_multiple_models.h"
+#include "demo_customize_inf_single_model_with_sw_npu_format_convert.h"
 
 #include "example_shared_struct.h"
 #include "kp_struct.h"
@@ -88,6 +89,22 @@ int print_result_on_log()
                                                                          customize_pd_result->pds[i].pd.score,
                                                                          customize_pd_result->pds[i].pd.class_num,
                                                                          customize_pd_result->pds[i].pd_class_score);
+        }
+    }
+    else if (DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID == header_stamp->job_id)
+    {
+        demo_customize_inf_single_model_with_sw_npu_format_convert_result_t *app_customize_result = (demo_customize_inf_single_model_with_sw_npu_format_convert_result_t *)header_stamp;
+        kp_custom_with_sw_npu_format_convert_yolo_result_t *customize_yolo_result = (kp_custom_with_sw_npu_format_convert_yolo_result_t *)&app_customize_result->yolo_result;
+
+        printf("[Customize Result] Box Count = %u\n", customize_yolo_result->box_count);
+        for (uint32_t i = 0; i < customize_yolo_result->box_count; i++) {
+            printf("    [%d] x1 = %f, y1 = %f, x2 = %f, y2 = %f, score = %f, class_num = %d\n", i,
+                                                                                                customize_yolo_result->boxes[i].x1,
+                                                                                                customize_yolo_result->boxes[i].y1,
+                                                                                                customize_yolo_result->boxes[i].x2,
+                                                                                                customize_yolo_result->boxes[i].y2,
+                                                                                                customize_yolo_result->boxes[i].score,
+                                                                                                customize_yolo_result->boxes[i].class_num);
         }
     }
     else

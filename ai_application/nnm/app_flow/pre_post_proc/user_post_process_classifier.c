@@ -10,7 +10,7 @@
 #include "ipc.h"
 #include "kdpio.h"
 #include "user_post_process_classifier.h"
-#include "user_post_utils.h"
+#include "user_utils.h"
 
 /******************************************************************
  * local define values

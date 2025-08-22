@@ -8,7 +8,7 @@
 #define USER_POST_PROCESS_YOLOV5_H
 
 #include "ncpu_gen_struct.h"
-#include "user_post_utils.h"
+#include "user_utils.h"
 
 #define EX_MAX_YOLO_ANCHOR_LAYER_NUM            (5)                                                                 /**< max number of layer for anchor */
 #define EX_MAX_YOLO_ANCHOR_CELL_NUM_PER_LAYER   (3)                                                                 /**< max number of anchor per gride cell */

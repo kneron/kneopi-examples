@@ -32,7 +32,7 @@ void *example_webcam_input_thread(void *arg)
     cv::VideoCapture cv_camera_cap;
     cv::Mat cv_read_camera, cv_img_to_be_sent;
 
-    if (false == cv_camera_cap.open(pInitOpt->pszCameraPath)) {
+    if (false == cv_camera_cap.open(pInitOpt->pszCameraPath, cv::CAP_V4L2)) {
         printf("[%s] open camera failed %s\n", __FUNCTION__, pInitOpt->pszCameraPath);
         goto EXIT_FREAD_IMAGE_THREAD;
     }

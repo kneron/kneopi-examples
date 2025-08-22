@@ -16,6 +16,7 @@
 #include "kdp2_inf_app_yolo.h"
 #include "demo_customize_inf_single_model.h"
 #include "demo_customize_inf_multiple_models.h"
+#include "demo_customize_inf_single_model_with_sw_npu_format_convert.h"
 
 static void _app_func(int num_input_buf, void** inf_input_buf_list);
 
@@ -43,6 +44,9 @@ void _app_func(int num_input_buf, void** inf_input_buf_list)
     case DEMO_KL730_CUSTOMIZE_INF_MULTIPLE_MODEL_JOB_ID:
         demo_customize_inf_multiple_model(job_id, num_input_buf, (void**)inf_input_buf_list);
         break;
+    case DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID:
+        demo_customize_inf_single_model_with_sw_npu_format_convert(job_id, num_input_buf, (void**)inf_input_buf_list);
+        break;
     default:
         VMF_NNM_Fifoq_Manager_Status_Code_Enqueue(job_id, KP_FW_ERROR_UNKNOWN_APP);
         printf("unsupported job_id %d \n",job_id);
@@ -63,6 +67,9 @@ void _app_func_deinit(unsigned int job_id)
         break;
     case DEMO_KL730_CUSTOMIZE_INF_MULTIPLE_MODEL_JOB_ID:
         demo_customize_inf_multiple_model_deinit();
+        break;
+    case DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID:
+        demo_customize_inf_single_model_with_sw_npu_format_convert_deinit();
         break;
     default:
         printf("%s, unsupported job_id %d \n",__func__,job_id);
@@ -86,6 +93,9 @@ void app_initialize(void)
 void app_destroy(void)
 {
     _app_func_deinit(KDP2_INF_ID_APP_YOLO);
+    _app_func_deinit(DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_JOB_ID);
+    _app_func_deinit(DEMO_KL730_CUSTOMIZE_INF_MULTIPLE_MODEL_JOB_ID);
+    _app_func_deinit(DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID);
 
     VMF_NNM_Inference_App_Destroy();
     VMF_NNM_Fifoq_Manager_Destroy();
