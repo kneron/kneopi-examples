@@ -142,7 +142,9 @@ enum model_type {
     KNERON_FD_ANYROTATE_fcos_336_608_3                                      = KNERON_CAT_FACE + 84,
     KNERON_FACE_EXPRESSION_48_48_3                                          = KNERON_CAT_FACE + 85,
     KNERON_DEPTH_LIVENESS_FeatherNetB_PAPERONLY_112_112_1                   = KNERON_CAT_FACE + 86,
-
+    KNERON_NIR_FR_FR65M_112_112_3                                           = KNERON_CAT_FACE + 87,
+    KNERON_CAT_FR_112_112_3                                                 = KNERON_CAT_FACE + 88,
+    
     //Category Object Detection related 200~300
     KNERON_OB_DETECT                                                        = 200,
     KNERON_OBJECTDETECTION_CENTERNET_512_512_3                              = KNERON_OB_DETECT,
@@ -330,6 +332,9 @@ enum model_type {
     KNERON_YOLOV7TINY_HORSE_640_384_3                                       = KNERON_OB_DETECT_ + 77,
     KNERON_YOLOV7TINY_HORSE24_640_384_3                                     = KNERON_OB_DETECT_ + 78,
     KNERON_YOLOV705_HANDKPT_640_640_3                                       = KNERON_OB_DETECT_ + 79,
+    KNERON_YOLOV7_HANDKPT_640_640_3                                         = KNERON_OB_DETECT_ + 84,
+    KNERON_YOLOV7_catface_9kpts_640_640_3                                   = KNERON_OB_DETECT_ + 85,    
+    KNERON_YOLOV8S_THERMAL_640_640_3                                        = KNERON_OB_DETECT_ + 86,
 
     //Category 3D Detector related 6000~
     KNERON_OB_DETECT_3D_                                                    = 6000,
@@ -409,6 +414,9 @@ enum model_type {
     KNERON_TINY_STEREONET_SOFTMAX_CA_32_96_48                               = KNERON_DEPTH + 40, // 128x384 Cost Aggregation with smaller hourglass, softmax regression, disparity offset, and 96x192 output
     KNERON_TINY_STEREONET_CONF_RN_128_384_3                                 = KNERON_DEPTH + 41, // 128x384 RefineNet with confidence score, disparity offset, and 128x384 output
     KNERON_STEREONET_FE_tinySPP_128_384_1                                   = KNERON_DEPTH + 42, // 128x384 Feature Extraction with smaller SPP module and 1 channel input
+    KNERON_STEREONET_FE_tinySPP_256_576_1                                   = KNERON_DEPTH + 43, // 256x576 Feature Extraction with smaller SPP module and 1 channel input
+    KNERON_TINY_STEREONET_CC_64_144_96                                      = KNERON_DEPTH + 44, // 256x576 Cost Construction with samller input channel
+    KNERON_TINY_STEREONET_SOFTMAX_CA_64_144_48                              = KNERON_DEPTH + 45, // 256x576 Cost Aggregation with smaller hourglass, softmax regression, disparity offset, and 128x288 output
 
     //Category tracker related 900~1000
     KNERON_TRACKER                                                          = 900,
@@ -602,6 +610,8 @@ enum model_type {
     KNERON_SEGMENTATION_PIDNETT_LEAKY_7CLS_UPSAMPLE_O150X200_600_800_3      = KNERON_SEGMENTATION + 31,
     KNERON_SEGMENTATION_PIDNETS_ROADMARKING_9CLS_UPSAMPLE_O270X480_540_960_3 = KNERON_SEGMENTATION + 32,
     KNERON_SEGMENTATION_PIDNETT_LEAKY_7CLS_UPSAMPLE_O150X200_600_800_1      = KNERON_SEGMENTATION + 33,
+    KNERON_SEGMENTATION_PIDNETT_LEAKY_2CLS_LANE_UPSAMPLE_O180X360_180_360_3 = KNERON_SEGMENTATION + 34,
+    KNERON_SEGMENTATION_PIDNETT_LEAKY_2CLS_LANE_NOUPSAMPLE_O23X45_180_360_3 = KNERON_SEGMENTATION + 35,
 
     //Category System models
     KNERON_SYSTEMMODELS                                                     = 4000,

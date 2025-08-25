@@ -121,6 +121,9 @@ typedef uint32_t kdp_size_t;
 #define IMAGE_FORMAT_DEFINED_PAD            BIT23                               /* Customized padding */
 
 /* scale/crop control */
+#define IMAGE_FORMAT_NO_UPSCALING           BIT25                               /* 1: no upscale, only downscale is supported */
+                                                                                /* 0: both upscale and downscale are supported */
+
 #define IMAGE_FORMAT_SYMMETRIC_PADDING      BIT21                               /* 1: symmetic padding; */
                                                                                 /* 0: corner padding */
 #define IMAGE_FORMAT_PAD_SHIFT              21

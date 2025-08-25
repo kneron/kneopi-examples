@@ -26,6 +26,7 @@ extern "C"
 
 static char _scpu_fw_path[128] = "../res/firmware/KL730/kp_firmware.tar";
 static char _model_file_path[128] = "../res/models/KL730/YoloV5s_640_640_3/models_730.nef";
+static char _webcam_path[128] = "/dev/video0";
 
 static bool _receive_running = true;
 static std::mutex _mutex_result;
@@ -128,8 +129,8 @@ void *result_receive_function(void *data)
 }
 
 void init_camera() {
-    /******* Open USB camera on /dev/video8 *******/
-    bool opened = _cv_camera_cap.open("/dev/video8");
+    /******* Open USB camera *******/
+    bool opened = _cv_camera_cap.open(_webcam_path, cv::CAP_V4L2);
     printf("open camera ... %s\n", (opened) ? "OK" : "failed");
 
     /******* Setting frame size may failed in OpenCV *******/

@@ -16,6 +16,7 @@
 
 #include "demo_customize_inf_single_model.h"
 #include "user_post_process_yolov5.h"
+#include "user_pre_process_yolov5.h"
 
 static ex_yolo_post_proc_config_t post_proc_params_v5s = {
     .prob_thresh                = 0.15,
@@ -36,12 +37,13 @@ void demo_customize_inf_single_model(int job_id, int num_input_buf, void **inf_i
 {
     // 'inf_input_buf' and 'inf_result_buf' are provided by kdp2 middleware
     // the content of 'inf_input_buf' is transmitted from host SW = header + image
-    // 'inf_result_buf' is used to carry inference result back to host SW = header + inferernce result (from ncpu/npu)
+    // 'inf_result_buf' is used to carry inference result back to host SW = header + inference result (from ncpu/npu)
 
     // now get an available free result buffer
     // normally the begin part of result buffer should contain app-defined result header
     // and the rest is for ncpu/npu inference output data
 
+    // verify that the input data number meets the requirements of the model
     if (1 != num_input_buf) {
         VMF_NNM_Fifoq_Manager_Status_Code_Enqueue(job_id, KP_FW_WRONG_INPUT_BUFFER_COUNT_110);
         return;
@@ -74,10 +76,11 @@ void demo_customize_inf_single_model(int job_id, int num_input_buf, void **inf_i
     inf_config.image_list[0].image_resize   = KP_RESIZE_ENABLE;                         // enable resize
     inf_config.image_list[0].image_padding  = KP_PADDING_CORNER;                        // enable padding on corner
     inf_config.model_id                     = KNERON_YOLOV5S_COCO80_640_640_3;          // this depends on model
-    
+
     // setting pre/post-proc configuration
     inf_config.pre_proc_config              = NULL;
-    inf_config.post_proc_config             = (void *)&post_proc_params_v5s;            // yolo post-process configurations for yolo v3 series
+    inf_config.pre_proc_func                = user_pre_process_yolov5;
+    inf_config.post_proc_config             = (void *)&post_proc_params_v5s;            // yolo post-process configurations for yolo v5 series
     inf_config.post_proc_func               = user_post_yolov5_no_sigmoid;
 
     // set up pd result output buffer for ncpu/npu

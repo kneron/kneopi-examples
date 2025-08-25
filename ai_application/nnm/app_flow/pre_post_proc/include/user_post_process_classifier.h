@@ -8,7 +8,7 @@
 #define USER_POST_PROCESS_CLASSIFIER_H
 
 #include "ncpu_gen_struct.h"
-#include "user_post_utils.h"
+#include "user_utils.h"
 
 #define EX_CLASSIFIER_MAX_SIZE_TOP_N (1000)                                     /**< max number of top N classification result */
 

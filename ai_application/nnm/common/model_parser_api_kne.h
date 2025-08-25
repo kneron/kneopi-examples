@@ -46,19 +46,28 @@ typedef enum {
 typedef enum {
     DRAM_FMT_UNKNOWN = -1,
     /* conv format */
-    DRAM_FMT_1W16C8B         = 0,
-    DRAM_FMT_1W16C8BHL       = 1,
-    DRAM_FMT_4W4C8B          = 2,
-    DRAM_FMT_4W4C8BHL        = 3,
-    DRAM_FMT_16W1C8B         = 4,
-    DRAM_FMT_16W1C8BHL       = 5,
-    DRAM_FMT_8W1C16B         = 6,
+    DRAM_FMT_1W16C8B_CH_COMPACT     = 0,
+    DRAM_FMT_1W16C8BHL_CH_COMPACT   = 1,
+    DRAM_FMT_4W4C8B                 = 2,
+    DRAM_FMT_4W4C8BHL               = 3,
+    DRAM_FMT_16W1C8B                = 4,
+    DRAM_FMT_16W1C8BHL              = 5,
+    DRAM_FMT_8W1C16B                = 6,
     /* psum data format */
-    DRAM_FMT_PS_1W16C24B     = 7,
+    DRAM_FMT_PS_1W16C24B            = 7,
+    /* conv format */
+    DRAM_FMT_1W16C8B                = 8,
+    DRAM_FMT_1W16C8BHL              = 9,
+    /* inproc format */
+    DRAM_FMT_HW4C8B_KEEP_A          = 10,
+    DRAM_FMT_HW4C8B_DROP_A          = 11,
+    DRAM_FMT_HW1C8B                 = 12,
+    DRAM_FMT_HW1C16B_LE             = 13,
+    DRAM_FMT_HW1C16B_BE             = 14,
     /* row format */
-    DRAM_FMT_RAW8B           = 100,
-    DRAM_FMT_RAW16B          = 101,
-    DRAM_FMT_RAW_FLOAT       = 102
+    DRAM_FMT_RAW8B                  = 100,
+    DRAM_FMT_RAW16B                 = 101,
+    DRAM_FMT_RAW_FLOAT              = 102
 } mdl_dram_data_fmt_t;
 
 typedef enum {
@@ -147,6 +156,7 @@ typedef void * session_hdl_t;
 typedef void * mdl_hdl_t;
 typedef void * param_hdl_t;
 typedef void * const_data_hdl_t;
+typedef void * input_order_hdl_t;
 typedef void * dependency_hdl_t;
 typedef void * npu_eu_param_hdl_t;
 typedef void * cpu_eu_param_hdl_t;
@@ -559,26 +569,29 @@ query the NPU output data address for the specified tensor table
 [In]: out_seg - Output segment address
 [In]: wk_seg - Work segment address
 [In]: cpu_temp_seg - cpu_temp segment address
-[In]: wt_seg - Weight segment address
+[In]: wt_seg - weight segment address
+[In]: const_input_seg - constant input segment address
 
 Return: the address of the NPU data
 */
 uintptr_t mdl_tensor_get_out_addr(mdl_hdl_t mdl_hdl, tensor_hdl_t hdl, int idx,
                                   uintptr_t in_seg, uintptr_t out_seg,
                                   uintptr_t wk_seg, uintptr_t cpu_temp_seq,
-                                  uintptr_t wt_seg);
+                                  uintptr_t wt_seg, uintptr_t const_input_seg);
 
 /**
-query quantization information (scale_count and scale_type) for the specified tensor
+query quantization information (radix_count, scale_count and scale_type) for the specified tensor
 
 [In]: hdl - handle of the tensor vector
 [In]: idx - index of Tensor vector
+[Out]: radix_count_p - point to the variable containing radix_count
 [Out]: scale_count_p - point to the variable containing scale_count
 [Out]: scale_type_p - point to the variable containning DataType
 
 Return: the information of quantization will be filled in passed in varibles
 */
 void mdl_tensor_get_quant_info(tensor_hdl_t hdl, int idx,
+                               uint32_t *radix_count_p,
                                uint32_t *scale_count_p, mdl_data_type_t *scale_type_p);
 
 /**
@@ -749,11 +762,15 @@ inquery the conditional variable address of the LOOP core
 [In]: out_seg - Output segment address
 [In]: wk_seg - Work segment address
 [In]: cpu_temp_seg - cpu_temp segment address
+[In]: wt_seg - weight segment address
+[In]: const_input_seg - constant input segment address
 
 Return: address of the conditinal variable
 */
-uintptr_t mdl_loop_get_condition_var_addr(loop_hdl_t loop_hdl, uintptr_t in_seg,
-        uintptr_t out_seg, uintptr_t wk_seg, uintptr_t cpu_temp_seq);
+uintptr_t mdl_loop_get_condition_var_addr(loop_hdl_t loop_hdl,
+                                          uintptr_t in_seg, uintptr_t out_seg,
+                                          uintptr_t wk_seg, uintptr_t cpu_temp_seq,
+                                          uintptr_t wt_seg, uintptr_t const_input_seg);
 
 /**
 inquery the NPU parameters for loop core initialization
@@ -890,6 +907,27 @@ Return: handle to the outputs tensor table, as the handle to
 */
 const_data_hdl_t mdl_cpu_get_weights_const_hdl(cpu_operator_hdl_t hdl, int n_idx);
 
+/**
+query the length of the input_order vector for the specified cpu node
+
+[In]: hdl - handle of the cpu operator
+[In]: n_idx - index of the cpu node
+
+Return: length of input_order vector
+*/
+int mdl_cpu_get_input_order_len(cpu_operator_hdl_t hdl, int n_idx);
+
+/**
+obtain the input_order vector table for the specified cpu node
+
+[In]: hdl - handle of the cpu operator
+[In]: n_idx - index of the cpu node
+
+Return: handle to the outputs tensor table, as the handle to
+        access Tensor parameters via Tensor Utility APIs
+*/
+input_order_hdl_t mdl_cpu_get_input_order_hdl(cpu_operator_hdl_t hdl, int n_idx);
+
 /*********************************************************************************
                      Const Data Utility APIs
 **********************************************************************************/
@@ -926,6 +964,19 @@ Return: void
 */
 void mdl_const_get_const_values(const_data_hdl_t hdl, int c_idx, int *pLen, uint8_t **pVecAddr);
 
+/*********************************************************************************
+                    CPU Input Order Utility APIs
+**********************************************************************************/
+
+/**
+query the const data vector len and vector start address of the index specified const data element
+
+[In]: hdl - handle of the input_order vector
+[In]: idx - index in input_order vector
+
+Return: input type of the specify CPU input index
+*/
+int8_t mdl_input_order_get_input_type(input_order_hdl_t hdl, int idx);
 
 /*********************************************************************************
                      NPU_CPU core Utility APIs

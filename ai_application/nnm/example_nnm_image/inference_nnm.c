@@ -14,6 +14,7 @@
 #include "kdp2_inf_app_yolo.h"
 #include "demo_customize_inf_single_model.h"
 #include "demo_customize_inf_multiple_models.h"
+#include "demo_customize_inf_single_model_with_sw_npu_format_convert.h"
 
 #include "example_shared_struct.h"
 #include "kp_struct.h"
@@ -127,7 +128,7 @@ int prepare_inference_header(uintptr_t buf_addr, int job_id)
         inf_number %= 0xFFFFFFFF;   //To avoid overflow
 
         header_stamp->magic_type = KDP2_MAGIC_TYPE_INFERENCE;
-        header_stamp->total_size = sizeof(kdp2_ipc_app_yolo_inf_header_t) + (uint32_t)image_size;
+        header_stamp->total_size = sizeof(demo_customize_inf_single_model_header_t) + (uint32_t)image_size;
         header_stamp->total_image = 1;
         header_stamp->image_index = 0;
         header_stamp->job_id = DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_JOB_ID;
@@ -152,7 +153,7 @@ int prepare_inference_header(uintptr_t buf_addr, int job_id)
         inf_number %= 0xFFFFFFFF;   //To avoid overflow
 
         header_stamp->magic_type = KDP2_MAGIC_TYPE_INFERENCE;
-        header_stamp->total_size = sizeof(kdp2_ipc_app_yolo_inf_header_t) + (uint32_t)image_size;
+        header_stamp->total_size = sizeof(demo_customize_inf_multiple_models_header_t) + (uint32_t)image_size;
         header_stamp->total_image = 1;
         header_stamp->image_index = 0;
         header_stamp->job_id = DEMO_KL730_CUSTOMIZE_INF_MULTIPLE_MODEL_JOB_ID;
@@ -161,6 +162,31 @@ int prepare_inference_header(uintptr_t buf_addr, int job_id)
         app_customize_header->height = _input_data.input_image_height;
 
         memcpy((void *)(buf_addr + sizeof(demo_customize_inf_multiple_models_header_t)), (void *)_input_data.input_buf_address, image_size);
+
+        _input_data.input_ready_inf = false;
+        pthread_mutex_unlock(&_mutex_image);
+    }
+    else if (DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID == job_id)
+    {
+        pthread_mutex_lock(&_mutex_image);
+        demo_customize_inf_single_model_with_sw_npu_format_convert_header_t *app_customize_header = (demo_customize_inf_single_model_with_sw_npu_format_convert_header_t *)buf_addr;
+        kp_inference_header_stamp_t *header_stamp = &app_customize_header->header_stamp;
+        int image_size = _input_data.input_buf_size;
+
+        static uint32_t inf_number = 0;
+        inf_number = inf_number + 1;
+        inf_number %= 0xFFFFFFFF;   //To avoid overflow
+
+        header_stamp->magic_type = KDP2_MAGIC_TYPE_INFERENCE;
+        header_stamp->total_size = sizeof(demo_customize_inf_single_model_with_sw_npu_format_convert_header_t) + (uint32_t)image_size;
+        header_stamp->total_image = 1;
+        header_stamp->image_index = 0;
+        header_stamp->job_id = DEMO_KL730_CUSTOMIZE_INF_SINGLE_MODEL_WITH_SW_NPU_FORMAT_CONVERT_JOB_ID;
+
+        app_customize_header->width = _input_data.input_image_width;
+        app_customize_header->height = _input_data.input_image_height;
+
+        memcpy((void *)(buf_addr + sizeof(demo_customize_inf_single_model_with_sw_npu_format_convert_header_t)), (void *)_input_data.input_buf_address, image_size);
 
         _input_data.input_ready_inf = false;
         pthread_mutex_unlock(&_mutex_image);

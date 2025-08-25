@@ -171,6 +171,7 @@ void demo_customize_inf_multiple_model(int job_id, int num_input_buf, void **inf
     // normally the begin part of result buffer should contain app-defined result header
     // and the rest is for ncpu/npu inference output data
 
+    // verify that the input data number meets the requirements of the model
     if (1 != num_input_buf) {
         VMF_NNM_Fifoq_Manager_Status_Code_Enqueue(job_id, KP_FW_WRONG_INPUT_BUFFER_COUNT_110);
         return;

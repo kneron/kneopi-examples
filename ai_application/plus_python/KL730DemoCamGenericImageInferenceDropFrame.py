@@ -38,9 +38,9 @@ def _image_send_function(_device_group: kp.DeviceGroup) -> None:
     try:
         # set camera configuration
         if 'Windows' == platform.system():
-            cap = cv2.VideoCapture('/dev/video8', cv2.CAP_DSHOW)
+            cap = cv2.VideoCapture('/dev/video0', cv2.CAP_DSHOW)
         else:
-            cap = cv2.VideoCapture('/dev/video8')
+            cap = cv2.VideoCapture('/dev/video0', cv2.CAP_V4L2)
         try_cap_time = 0
 
         while _SEND_RUNNING:

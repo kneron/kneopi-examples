@@ -45,9 +45,6 @@
 #define KDP2_MAGIC_TYPE_CHECKPOINT_DATA     0x34ABF977              /**< Magic number for debug checkpoint data */
 #define KDP2_MAGIC_TYPE_CHECKPOINT_DATA_V2  0x34ABF978              /**< Magic number for debug checkpoint data */
 
-#ifdef AUTOTEST /* CI_PACK_REMOVE_START */
-#define KDP2_MAGIC_TYPE_JSON 0x22EE3A86                 /**< Magic number for json file stream */
-#endif /* CI_PACK_REMOVE_END */
 
 /**
  * @brief return code of most APIs.
@@ -205,6 +202,29 @@ enum KP_API_RETURN_CODE
     /* rgbd seg error code */
     KP_FW_APP_RGBD_SEG_INSUFFICIENT_RESULT_BUFFER_SIZE_10200 = 10200,
     KP_FW_APP_RGBD_SEG_INSUFFICIENT_INPUT_IMAGE_10201 = 10201,
+
+    /* rgbd triple cam seg error code */
+    KP_FW_APP_RGBD_TRIPLE_CAM_SEG_INSUFFICIENT_RESULT_BUFFER_SIZE_10300 = 10300,
+    KP_FW_APP_RGBD_TRIPLE_CAM_SEG_INSUFFICIENT_INPUT_IMAGE_10301 = 10301,
+    KP_FW_APP_RGBD_TRIPLE_CAM_SEG_INVALID_DEPTH_DIRECTION_10302 = 10302,
+
+    /* audio detect error code */
+    KP_FW_APP_AUDIO_DETECT_INVALID_INPUT_DATA_SIZE_10400 = 10400,
+
+    /* rgbd triple cam error code */
+    KP_FW_APP_RGBD_TRIPLE_CAM_INSUFFICIENT_RESULT_BUFFER_SIZE_10500 = 10500,
+    KP_FW_APP_RGBD_TRIPLE_CAM_INSUFFICIENT_INPUT_IMAGE_10501 = 10501,
+    KP_FW_APP_RGBD_TRIPLE_CAM_INVALID_DEPTH_DIRECTION_10502 = 10502,
+
+    /* unified video conference error code */
+    KP_FW_APP_UNIFIED_VIDEO_CONFERENCE_PERSON_HEAD_MATCHING_FAILED_10600 = 10600,
+    KP_FW_APP_UNIFIED_VIDEO_CONFERENCE_COMBINE_INPUT_FAILED_10601 = 10601,
+
+    /* tiny vd error code */
+    KP_FW_APP_TINY_VD_PERSON_HEAD_MATCHING_FAILED_10700 = 10700,
+
+    /* pedestrian detect forklift error code */
+    KP_FW_APP_PD_FORKLIFT_PERSON_HEAD_MATCHING_FAILED_10800 = 10800,
 };
 
 /**
@@ -317,17 +337,24 @@ typedef enum
  */
 typedef enum
 {
-    KP_MODEL_TENSOR_DATA_LAYOUT_UNKNOWN             = 0,
-    KP_MODEL_TENSOR_DATA_LAYOUT_4W4C8B              = 1,    /**< width: 4  scalars, channel: 4  scalars, depth: 8  bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8B             = 2,    /**< width: 1  scalars, channel: 16 scalars, depth: 8  bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_16W1C8B             = 3,    /**< width: 16 scalars, channel: 1  scalars, depth: 8  bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_8W1C16B             = 4,    /**< width: 8  scalars, channel: 1  scalars, depth: 16 bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_4W4C8BHL            = 5,    /**< width: 4  scalars, channel: 4  scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit" */
-    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8BHL           = 6,    /**< width: 1  scalars, channel: 16 scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit"  */
-    KP_MODEL_TENSOR_DATA_LAYOUT_16W1C8BHL           = 7,    /**< width: 16 scalars, channel: 1  scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit"  */
-    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_8B              = 8,    /**< packed int8_t  data, depth: 8  bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_16B             = 9,    /**< packed int16_t data, depth: 16 bits */
-    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_FLOAT           = 10,   /**< packed float   data, depth: 32 bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_UNKNOWN                 = 0,
+    KP_MODEL_TENSOR_DATA_LAYOUT_4W4C8B                  = 1,    /**< width: 4  scalars, channel: 4  scalars, depth: 8  bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8B                 = 2,    /**< width: 1  scalars, channel: 16 scalars, depth: 8  bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_16W1C8B                 = 3,    /**< width: 16 scalars, channel: 1  scalars, depth: 8  bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_8W1C16B                 = 4,    /**< width: 8  scalars, channel: 1  scalars, depth: 16 bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_4W4C8BHL                = 5,    /**< width: 4  scalars, channel: 4  scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit" */
+    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8BHL               = 6,    /**< width: 1  scalars, channel: 16 scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit" */
+    KP_MODEL_TENSOR_DATA_LAYOUT_16W1C8BHL               = 7,    /**< width: 16 scalars, channel: 1  scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit" */
+    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_8B                  = 8,    /**< packed int8_t  data, depth: 8  bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_16B                 = 9,    /**< packed int16_t data, depth: 16 bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_RAW_FLOAT               = 10,   /**< packed float   data, depth: 32 bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8B_CH_COMPACT      = 11,   /**< width: 1  scalars, channel: 16 scalars, depth: 8  bits (channel compact mode) */
+    KP_MODEL_TENSOR_DATA_LAYOUT_1W16C8BHL_CH_COMPACT    = 12,   /**< width: 1  scalars, channel: 16 scalars, depth: 16 bits, and store scalar into 2 entries with "High 8-bit" and "Low 8-bit" (channel compact mode) */
+    KP_MODEL_TENSOR_DATA_LAYOUT_HW4C8B_KEEP_A           = 13,   /**< packed int8_t  data, channel: 4 scalars, depth: 8  bits (NPU keeping alpha channel data in vision model, e.g. model input shape is 1x4xHxW) */
+    KP_MODEL_TENSOR_DATA_LAYOUT_HW4C8B_DROP_A           = 14,   /**< packed int8_t  data, channel: 4 scalars, depth: 8  bits (NPU ignore alpha channel data in vision model, e.g. model input shape is 1x3xHxW) */
+    KP_MODEL_TENSOR_DATA_LAYOUT_HW1C8B                  = 15,   /**< packed int8_t  data, channel: 1 scalars, depth: 8  bits */
+    KP_MODEL_TENSOR_DATA_LAYOUT_HW1C16B_LE              = 16,   /**< packed int16_t data, channel: 1 scalars, depth: 16 bits (16-bit data arranged in little-endian order) */
+    KP_MODEL_TENSOR_DATA_LAYOUT_HW1C16B_BE              = 17    /**< packed int16_t data, channel: 1 scalars, depth: 16 bits (16-bit data arranged in big-endian order) */
 } kp_model_tensor_data_layout_t;
 
 /**
@@ -616,6 +643,15 @@ typedef enum
     KP_RESIZE_ENABLE = 0x2,     /**< Enable Resize in Pre-process */
 } kp_resize_mode_t;
 
+typedef enum
+{
+    KP_ROT_0_DEGRESS = 0x0,     /**< Disable Rotation in Pre-process */
+    KP_ROT_90_DEGRESS = 0x1,    /**< Enable Rotation 90 Degress in Pre-process */
+    KP_ROT_270_DEGRESS = 0x2,   /**< Enable Rotation 270 Degress in Pre-process */
+    KP_ROT_180_DEGRESS = 0x3,   /**< Enable Rotation 180 Degress in Pre-process */
+    KP_ROT_MAX_NUM,
+} kp_rotation_mode_t;
+
 /**
  * @brief padding mode
  */
@@ -866,6 +902,14 @@ typedef struct {
     float feature_map[FR_FEAT_LENGTH];          /**< feature map in floating point */
     int8_t feature_map_fixed[FR_FEAT_LENGTH];   /**< feature map in fixed point */
 } __attribute__((aligned(4))) kp_fr_result_t;
+
+/**
+ * @brief describe an eye gaze result
+ */
+typedef struct {
+    float theta;                                /**< value of theta */
+    float phi;                                  /**< value of phi */
+} __attribute__((aligned(4))) kp_eye_gaze_angles_t;
 
 /**
  * @brief describe a classification result
