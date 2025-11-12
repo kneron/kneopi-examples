@@ -19,7 +19,7 @@ extern "C" {
 #include "kp_struct.h"
 #include "model_type.h"
 
-extern NNM_SHARED_INPUT_T _input_data;
+volatile extern NNM_SHARED_INPUT_T _input_data;
 extern pthread_mutex_t _mutex_image;
 
 extern bool _blDispatchRunning;
@@ -28,8 +28,8 @@ extern bool _blFifoqManagerRunning;
 extern bool _blImageRunning;
 extern bool _blDisplayRunning;
 
-bool _blSendInfRunning = true;
-bool _blResultRunning = true;
+volatile bool _blSendInfRunning = true;
+volatile bool _blResultRunning = true;
 
 bool _enable_inf_droppable = true;
 

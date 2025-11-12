@@ -4,6 +4,9 @@ project(example_nnm_image)
 SET(TARGET_NAME example_nnm_image)
 ADD_DEFINITIONS("-DVATICS_PLATFORM -DKL730")
 
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
 SET(APP_PATH            "${CMAKE_CURRENT_SOURCE_DIR}/../app_flow"       CACHE STRING "The path of app.")
 SET(COMMON_PATH         "${CMAKE_CURRENT_SOURCE_DIR}/../common"         CACHE STRING "The path of common include.")
 SET(VTCS_HEADER_PATH    "/usr/include/vtcs_root_leipzig"                CACHE STRING "The path of vtcs header.")

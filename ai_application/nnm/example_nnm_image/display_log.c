@@ -16,10 +16,10 @@
 #include "example_shared_struct.h"
 #include "kp_struct.h"
 
-extern NNM_SHARED_INPUT_T _input_data;
+volatile extern NNM_SHARED_INPUT_T _input_data;
 extern pthread_mutex_t _mutex_image;
 
-extern NNM_SHARED_RESULT_T _inf_result;
+volatile extern NNM_SHARED_RESULT_T _inf_result;
 extern pthread_mutex_t _mutex_result;
 
 extern unsigned int _image_count;
@@ -32,7 +32,7 @@ extern bool _blImageRunning;
 extern bool _blSendInfRunning;
 extern bool _blResultRunning;
 
-bool _blDisplayRunning = true;
+volatile bool _blDisplayRunning = true;
 
 extern unsigned int _loop_time;
 
